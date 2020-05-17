@@ -7,7 +7,7 @@
       <!-- <v-divider class="mx-2" inset vertical ></v-divider> -->
       <v-spacer></v-spacer>
       <v-text-field v-model="search" append-icon="search" label="Search" single-line hide-details></v-text-field>
-      <v-select label="fields.label" :options="fields.value" class="mx-5 mt-4"  v-model="selected"></v-select>
+      <v-select :items="fields" class="mx-5 mt-4" label="search by field" v-model="selected" ></v-select>
       <v-dialog v-model="dialog" max-width="500px">
         <v-btn slot="activator" color="info" dark class="mb-2">New Location</v-btn>
         <v-card>
@@ -78,10 +78,7 @@ import axios from 'axios'
       dialog: false,
       search:'',
       selected:'',
-      fields: [{label:'All',value:'all'},{label:'Program Code',value:'pid'},
-      {label:'Class Code',value:'classcode'},{label:'Program Name',value:'progname'},
-      {label:'Start Date',value:'startdate'},{label:'Activity Type',value:'acttype'},
-      {label:'Venue',value:'venue'},{label:'Quota',value:'quota'}],
+      fields: ['all','pid', 'locationName','address', 'phone'],
           
       headers: [
           { text: 'Location ID ',align: 'left',value: 'pid'},
@@ -91,16 +88,14 @@ import axios from 'axios'
         ],
       editedIndex: -1,
       editedItem: {
-        pid:0, classcode: 0, progname: '',
-        startdate: 'yyyy-mm-dd', enddate: 'yyyy-mm-dd',
-        starttime: '00:00', endtime: '00:00',
-        acttype: '',  venue: '',  quota:0,
+        pid:0, locationName: '', latitude: 0,
+        longitude: 0, address: '',
+        phone: '',
       },
       defaultItem: {
-        pid:0,classcode: 0, progname: '',
-        startdate: 'yyyy-mm-dd', enddate: 'yyyy-mm-dd',
-        starttime: '00:00', endtime: '00:00',
-        acttype: '',  venue: '',  quota:0,
+        pid:0, locationName: '', latitude: 0,
+        longitude: 0, address: '',
+        phone: '',
       }
     }),
     
@@ -126,17 +121,16 @@ import axios from 'axios'
         var selected = this.selected
         search = search.toString().toLowerCase()
         if(selected=="all"){
-           return items.filter(item => filter(item["pid"], search) || filter(item["progname"], search) || filter(item["venue"], search) || filter(item["classcode"], search) ||  
-        filter(item["startdate"], search)|| filter(item["quota"], search) || filter(item["acttype"], search));
+           return items.filter(item => filter(item["pid"], search) || filter(item["locationName"], search) || filter(item["address"], search)|| filter(item["phone"], search));
         }
         else if(selected) {
            return items.filter(row => filter(row[selected], search));
         }
-        return items.filter(item => filter(item["pid"], search) || filter(item["progname"], search) || filter(item["venue"], search) || filter(item["classcode"], search) ||  
-        filter(item["startdate"], search)|| filter(item["quota"], search) || filter(item["acttype"], search));
+        return items.filter(item => filter(item["pid"], search) || filter(item["locationName"], search) || filter(item["address"], search)|| filter(item["phone"], search));
 
       },
       editItem (item) {
+        console.log('edit item')
         console.log(item)
         this.editedIndex = this.locations.indexOf(item)
         this.editedItem = Object.assign({}, item)
@@ -171,6 +165,8 @@ import axios from 'axios'
 
       save () {
         if (this.editedIndex > -1) {
+          console.log('check1')
+          console.log(this.editedItem)
           axios.put('http://localhost:3000/admin/location/', this.editedItem)
             .then(function (response) {
               alert(response.data)
@@ -180,6 +176,8 @@ import axios from 'axios'
               console.log(error);
             });
         } else {
+          console.log('check2')
+          console.log(this.editedItem)
           axios.post('http://localhost:3000/admin/location/', this.editedItem)
             .then(function (response) {
               alert(response.data)
@@ -199,7 +197,6 @@ import axios from 'axios'
         return this.editedIndex === -1 ? 'New Location' : 'Edit Location'
       },
       locations(){
-        console.log("hererererr123123123");
         console.log( this.$store.state.allLocations);
         return this.$store.state.allLocations
       }

@@ -41,7 +41,7 @@
          </v-toolbar>
           <v-container fluid grid-list-md>
             <v-layout row wrap>
-              <v-flex xs5 > 
+              <v-flex xs6 > 
                 <v-card>
                   <v-card-title class="subheading font-weight-bold">Location</v-card-title>
 
@@ -60,15 +60,10 @@
 
                     <v-list-tile>
                       <v-list-tile-content class="font-weight-bold">Address:</v-list-tile-content>
-                      <!-- <v-list-tile-content class="align-end" >{{ item.address }}</v-list-tile-content> -->
                     </v-list-tile>
 
                     {{ item.address }}
 
-                    <!-- <v-list-subtitle>
-                      <v-list-subtitle-content>{{ item.address }}</v-list-subtitle-content>
-                    </v-list-subtitle>
- -->
                     <v-list-tile>
                       <v-list-tile-content class="font-weight-bold">Phone:</v-list-tile-content>
                       <v-list-tile-content class="align-end">{{ item.phone }}</v-list-tile-content>
@@ -76,17 +71,18 @@
 
                   </v-list>
                 </v-card>
-                <v-card>
-                  <gmap-map
-                    :center="{lat:10, lng:10}"
-                    :zoom="7"
-                    map-type-id="terrain"
-                  >
-                  </gmap-map>
-                </v-card>
+                <GmapMap
+                  :center="myCoordinates"
+                  :zoom="17"
+                  style="width:100%; height:360px; margin: 8px auto;"
+                >
+                  <GmapMarker
+                    :position="myCoordinates"
+                  />
+                </GmapMap>
               </v-flex>
 
-              <v-flex xs7>
+              <v-flex xs6>
                 <v-card  class="commentClass scroll" height="100">
                   <v-card-title class="subheading font-weight-bold">Comments</v-card-title>
 
@@ -127,17 +123,23 @@
 </template>
 
 <script>
-import axios from 'axios'
+import axios from 'axios';
+import GoogleMapLoader from './GoogleMapLoader'
 
 export default {
   components:{
-
   },
   props: ['pid'],
   data() {
+    console.log("item.latitude");
+    console.log(this.$route.query.location.latitude);
     return {
       dialog: false,
       comment:"",
+      myCoordinates: {
+          lat: this.$route.query.location.latitude,
+          lng: this.$route.query.location.longitude
+      },
     }
   },
   mounted:function(){
@@ -191,7 +193,7 @@ export default {
     },
     isFavourite(){
       return this.$store.state.userFavouritesPID.includes(this.$route.params.pid)
-    }
+    },
 
   },
 

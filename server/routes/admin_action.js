@@ -63,32 +63,38 @@ router.put('/location',async (req,res)=>{
   if(req.body['locationID']==null)
     return res.send("Please input Location ID");
   if(req.body['locationName']!=null){
+    console.log('2');
+    console.log(req.body['locationID']);
     var conditions = { pid: req.body['locationID']},
-      update = { $set: { classcode: req.body['locationName'] }};
+      update = { $set: { locationName: req.body['locationName'] }};
     await Location.updateOne(conditions,update,function(err,location){
     })
   }
   if(req.body['latitude']!=null){
+    console.log('3');
     var conditions = { pid: req.body['locationID']},
-      update = { $set: { startdate: req.body['latitude'] }};
+      update = { $set: { latitude: req.body['latitude'] }};
     await Location.updateOne(conditions,update,function(err,location){
     })
   }
   if(req.body['longitude']!=null){
+    console.log('4');
     var conditions = { pid: req.body['locationID']},
-      update = { $set: { enddate: req.body['longitude'] }};
+      update = { $set: { longitude: req.body['longitude'] }};
     await Location.updateOne(conditions,update,function(err,location){
     })
   }
   if(req.body['address']!=null){
+    console.log('5');
     var conditions = { pid: req.body['locationID']},
-      update = { $set: { starttime: req.body['address'] }};
+      update = { $set: { address: req.body['address'] }};
     await Location.updateOne(conditions,update,function(err,location){
     })
   }
   if(req.body['phone']!=null){
+    console.log('6');
     var conditions = { pid: req.body['locationID']},
-      update = { $set: { endtime: req.body['phone'] }};
+      update = { $set: { phone: req.body['phone'] }};
     await Location.updateOne(conditions,update,function(err,location){
     })
   }
@@ -96,10 +102,10 @@ router.put('/location',async (req,res)=>{
 });
 
 router.delete('/location/:pid',(req,res)=>{
-  Location.findOneAndDelete({pid:req.params['pid']},function(err,p){
+  Location.findOneAndDelete({pid:req.params['pid']},function(err,location){
     if(err)
       return res.send(err);
-    if(p==null)
+    if(location==null)
       return res.send("No such location");
     res.send("Location Deleted!<br>\n"+
       "Location ID: "+location.pid+"<br>\n"+

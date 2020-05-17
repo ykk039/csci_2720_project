@@ -14,19 +14,14 @@ Vue.use(VueGoogleMaps, {
   load: {
     key: 'AIzaSyAIYfGXqgL1JNTsK--grAfsuJlbKwQziJo',
     libraries: 'places', // This is required if you use the Autocomplete plugin
-    // OR: libraries: 'places,drawing'
-    // OR: libraries: 'places,drawing,visualization'
-    // (as you require)
-
-    //// If you want to set the version, you can do so:
-    // v: '3.26',
+    v: '3.26',
   },
   installComponents: true
 })
 
 new Vue({
-  el: '#app',
+  // el: '#app',
   store,
   router,
   render: h => h(App)
-})
+}).$mount('#app')
